@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+				x:Class="FamilyMenu.ChefListView"
+				Title = "Manage Chefs"
+				xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
+				Padding="{x:Static local:PaddingResources.PagePadding}"
+				BackgroundColor="{x:Static local:ColorResources.PageBackgroundColor}" >
+	
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Text="Add" Command="{Binding AddCommand}" />
+	</ContentPage.ToolbarItems>
+
+	<ContentPage.Content>
+		<StackLayout Orientation="Vertical">
+			<ListView x:Name="cheflist" 
+						RowHeight="40" 
+						ItemsSource="{Binding Chefs}" 
+						SelectedItem="{Binding SelectedItem}">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<ViewCell.ContextActions>
+								<MenuItem Text="Delete  " IsDestructive="true"
+										Command="{Binding DeleteCommand}" />
+							</ViewCell.ContextActions>
+							<ViewCell.View>
+								<StackLayout Orientation="Horizontal" Spacing="0" VerticalOptions="Center">
+									<Label HorizontalOptions="Start" FontSize="16" 
+											FontFamily="Verdana" TextColor="Purple"
+											WidthRequest="70" HeightRequest="32" 
+											Text="Naam:" />
+									<Label HorizontalOptions="Start" FontSize="16" 
+											FontFamily="Verdana" TextColor="Black" 
+											XAlign="Start" YAlign="Start" Text="{Binding Name}" />
+								</StackLayout>
+							</ViewCell.View>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackLayout>
+</ContentPage.Content>
+</ContentPage>

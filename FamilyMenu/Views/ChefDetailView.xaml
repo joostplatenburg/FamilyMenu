@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+				x:Class="FamilyMenu.ChefDetailView"
+				Title="Chef's Details" >
+
+	<ContentPage.Padding>
+		<OnPlatform x:TypeArguments="Thickness" iOS="10, 20, 10,5" Android="10,0,10,5" WinPhone="10,0,10,5" />
+	</ContentPage.Padding>
+
+	<ContentPage.BackgroundColor>
+		<OnPlatform x:TypeArguments="Color" iOS="Default" Android="Silver" WinPhone="White" />
+	</ContentPage.BackgroundColor>
+
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Name="Save" Command = "{Binding SaveCommand}" />
+	</ContentPage.ToolbarItems>
+
+	<ContentPage.Content>
+		<StackLayout Orientation="Vertical">
+			<StackLayout Orientation="Horizontal"
+				HorizontalOptions = "Fill" VerticalOptions = "Center" 
+				Spacing = "5" Padding = "10,5,0,0">
+			
+				<Label Text="Chef:" FontFamily = "Verdana" FontSize = "16" 
+						HorizontalOptions = "Start" VerticalOptions = "CenterAndExpand"
+						WidthRequest = "85" TextColor = "{Binding LabelTextColor}" />
+
+				<Entry Keyboard = "Text" Placeholder="Enter Chefs Name" TextColor = "{Binding EntryTextColor}" 
+						VerticalOptions = "StartAndExpand" WidthRequest = "{Binding Width, Mode=OneWay}"
+						Text = "{Binding Name, Mode=TwoWay}" />
+			</StackLayout>
+
+			<StackLayout HorizontalOptions = "EndAndExpand" Orientation = "Horizontal"
+				Spacing = "5" Padding = "0,20,5,5" >
+
+				<Button WidthRequest = "120" Text = "Save"
+					BackgroundColor = "Silver" TextColor = "{Binding ButtonTextColor}" 
+					Command = "{Binding SaveCommand}" />
+			</StackLayout>
+
+		</StackLayout>
+
+	</ContentPage.Content>
+</ContentPage>

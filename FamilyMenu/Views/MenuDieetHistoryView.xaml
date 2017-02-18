@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				x:Class="FamilyMenu.MenuDieetHistoryView"
+				xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
+				Title="Menu History"
+				Padding="{x:Static local:PaddingResources.PagePadding}"
+				BackgroundColor="{x:Static local:ColorResources.PageBackgroundColor}" >
+
+	<ContentPage.Content>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<Label Grid.Row="0" Grid.Column="0"
+					Text="Dieetmenu's uit het verleden:"
+					TextColor="{x:Static local:ColorResources.LabelTextColor}"
+					FontFamily="{x:Static local:FontResources.FontFamily}" 
+					FontSize = "20" Font="Bold"
+					HorizontalOptions = "Start" VerticalOptions = "CenterAndExpand" />
+
+			<ListView Grid.Row="1" Grid.Column="0"
+					x:Name="list"
+					ItemsSource="{Binding AllDieetmenuEntries}" 
+					RowHeight="22" 
+					HasUnevenRows="true" >
+
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Orientation="Vertical">
+								<Label Text="{Binding dieetOmschrijving}" 
+										FontSize = "16" 
+										TextColor="{x:Static local:ColorResources.ListViewTextColor}" />
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+
+		</Grid>
+	</ContentPage.Content>
+</ContentPage>

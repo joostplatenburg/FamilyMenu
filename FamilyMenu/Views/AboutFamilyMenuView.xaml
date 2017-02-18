@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+			<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+				xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
+				x:Class="FamilyMenu.Views.AboutFamilyMenuView"
+				Title="About"
+				Padding="{x:Static local:PaddingResources.PagePadding}"
+				BackgroundColor="{x:Static local:ColorResources.PageBackgroundColor}" >
+
+	<ContentPage.Content>
+		<ScrollView
+			Orientation="Vertical"
+			VerticalOptions="FillAndExpand">
+				
+			<StackLayout 
+				Orientation="Vertical"
+				VerticalOptions="FillAndExpand">
+
+				<Label 
+					Text="About Family Menu"
+					TextColor="{x:Static local:ColorResources.LabelTextColor}"
+					FontFamily="{x:Static local:FontResources.FontFamily}" 
+					Font="Bold, 18"
+					/>
+
+				<Label 
+					Text="With this App small groups of people can maintain the weeks-menu for that group. Not only the menu is maintained but also the person that needs to prepare the diner is shown."
+					TextColor="{x:Static local:ColorResources.LabelTextColor}"
+					FontFamily="{x:Static local:FontResources.FontFamily}" 
+					Font="14"
+					/>
+
+			</StackLayout>
+		</ScrollView>
+	</ContentPage.Content>
+</ContentPage>

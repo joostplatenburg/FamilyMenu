@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+				xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
+				x:Class="FamilyMenu.Views.OptionsPage"
+				Title= "Options">
+
+	<ContentPage.Content>
+		<StackLayout Orientation="Vertical" Padding="5,40">
+			<Button Text = "Settings" 
+					TextColor = "{x:Static local:ColorResources.AccentColor}"
+					WidthRequest = "300" BackgroundColor = "{x:Static local:ColorResources.ButtonSettingColor}"
+					Clicked="SettingsClicked" />
+
+			<Button Text = "Manage Chefs" 
+					TextColor = "{x:Static local:ColorResources.AccentColor}"
+					WidthRequest = "300" BackgroundColor = "{x:Static local:ColorResources.ButtonSettingColor}"
+					Clicked="ManageChefsClicked" />
+
+			<Button Text = "About Family Menu" 
+					TextColor = "{x:Static local:ColorResources.AccentColor}"
+					WidthRequest = "300" BackgroundColor = "{x:Static local:ColorResources.ButtonSettingColor}"
+					Clicked="AboutFamilyMenyClicked" />
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>
