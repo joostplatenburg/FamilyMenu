@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
 				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
 				xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
@@ -7,69 +7,69 @@
 				Padding="{x:Static local:PaddingResources.PagePadding}"
 				BackgroundColor="{x:Static local:ColorResources.PageBackgroundColor}" >
 
-	<ContentPage.ToolbarItems>
-		<ToolbarItem Icon="ic_drawer.png" Activated="OnClick" />
-	</ContentPage.ToolbarItems>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="ic_drawer.png" Activated="OnClick" />
+    </ContentPage.ToolbarItems>
 
- 	<ContentPage.Content>
+    <ContentPage.Content>
         <Grid Padding="0,10,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="2" />
-            	<RowDefinition Height="40" />
+                <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <ListView Grid.Row="0" Grid.Column="0"
-                    x:Name="list" RowHeight="{Binding RowHeight}" 
+					x:Name="list" RowHeight="{Binding RowHeight}" 
 					ItemsSource="{Binding CurrentWeek}" 
 					SelectedItem="{Binding SelectedItem}"
 					IsPullToRefreshEnabled = "true">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<ViewCell>
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="*" />
-									<RowDefinition Height="2" />
-								</Grid.RowDefinitions>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="2" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<StackLayout Grid.Row="0" Grid.Column="0" 
+                                <StackLayout Grid.Row="0" Grid.Column="0" 
 											Orientation="Vertical" Spacing="0" Padding="0"
 											VerticalOptions="Start" 
 											WidthRequest="{Binding DayColumnWidth}">
-									<Label HorizontalOptions="Center" 
+                                    <Label HorizontalOptions="Center" 
 											FontSize="{Binding DayFontSize}" 
 											FontFamily="{x:Static local:FontResources.FontFamily}" 
 											TextColor="{x:Static local:ColorResources.LabelTextColor}"
 											HeightRequest="{Binding DayHeight}" 
 											XAlign="Center" YAlign="Start" 
 											Text="{Binding Datum, StringFormat='{0:ddd}'}" />
-									<Label HorizontalOptions="Center" 
+                                    <Label HorizontalOptions="Center" 
 											FontSize="{Binding DateFontSize}" 
 											FontFamily="{x:Static local:FontResources.FontFamily}" 
 											TextColor="{x:Static local:ColorResources.LabelTextColor}"  
 											XAlign="Center" YAlign="Start" 
 											Text="{Binding Datum, StringFormat='{0:dd-MM-yyyy}'}" />
-								</StackLayout>
+                                </StackLayout>
 
-								<StackLayout Grid.Row="0" Grid.Column="1"
+                                <StackLayout Grid.Row="0" Grid.Column="1"
 											Orientation="Vertical" Spacing="0" Padding="0"
 											VerticalOptions="Start">
-									<Label HorizontalOptions="Start" 
+                                    <Label HorizontalOptions="Start" 
 											FontSize="{Binding ChefFontSize}" 
 											FontFamily="{x:Static local:FontResources.FontFamily}" 
 											TextColor="{x:Static local:ColorResources.LabelTextColor}"  
 											HeightRequest="{Binding ChefHeight}" 
 											XAlign="Start" YAlign="Start" 
 											Text="{Binding Chef}" />
-									<Label HorizontalOptions="StartAndExpand" 
+                                    <Label HorizontalOptions="StartAndExpand" 
 											FontSize = "{Binding OmschrijvingFontSize}" 
 											FontFamily="{x:Static local:FontResources.FontFamily}" 
 											TextColor = "Black" 
@@ -77,44 +77,44 @@
 											XAlign="Start" YAlign="Start" 
 											Text="{Binding OmschrijvingWithDieet}" 
 											LineBreakMode="WordWrap" />
-								</StackLayout>
+                                </StackLayout>
 
-<!--								<Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
 											BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2"/>
--->							</Grid>
-						</ViewCell>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-			<Label Grid.Row="1" Grid.Column="0" 
-               BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2" />
+            <Label Grid.Row="1" Grid.Column="0" 
+			   BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2" />
 
-			<StackLayout Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalOptions="StartAndExpand">
-				<Button 
-	                x:Name="PreviousWeekButton" Image="arrow_left_blue.png"
+            <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalOptions="StartAndExpand">
+                <Button 
+					x:Name="PreviousWeekButton" Image="arrow_left_blue.png"
 					Command="{Binding PreviousWeekCommand}" 
-	                VerticalOptions="Center" 
+					VerticalOptions="Center" 
 					BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}">
-	            </Button>
+                </Button>
 
-	            <Button 
-	                x:Name="ThisWeekButton" Text="{Binding DisplayCurrentSaterday}" 
+                <Button 
+					x:Name="ThisWeekButton" Text="{Binding DisplayCurrentSaterday}" 
 					HorizontalOptions="CenterAndExpand"  
 					Command="{Binding ThisWeekCommand}" TextColor="{x:Static local:ColorResources.ButtonTextColor}"
 					FontFamily="{x:Static local:FontResources.FontFamily}"
 					BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}">
-	            </Button>
+                </Button>
 
-	            <Button 
-	                x:Name="NextWeekButton" Image="arrow_right_blue.png"
+                <Button 
+					x:Name="NextWeekButton" Image="arrow_right_blue.png"
 					Command="{Binding NextWeekCommand}"
 					VerticalOptions="Center" 
 					BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}">
-				</Button>
-			</StackLayout>
-									
-		</Grid>
-	</ContentPage.Content>
+                </Button>
+            </StackLayout>
+
+        </Grid>
+    </ContentPage.Content>
 
 </ContentPage>

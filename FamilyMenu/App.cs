@@ -1,13 +1,13 @@
 ﻿using System;
-using Xamarin.Forms;
-using FamilyMenu.Views;
 using System.Diagnostics;
+using FamilyMenu.Views;
+using Xamarin.Forms;
 using XLabs.Ioc;
 using XLabs.Platform.Device;
 
 namespace FamilyMenu
 {
-	public class App : Application
+    public class App : Application
 	{
 		public static MasterDetailPage MDPage;
 		public static MenuEntryDatabase database;
@@ -21,7 +21,8 @@ namespace FamilyMenu
 
 		public App ()
 		{
-			Debug.WriteLine ("Start App(), "+Device.OS.ToString());
+            
+			Debug.WriteLine ("Start App(), " + Device.RuntimePlatform.ToString());
 
             var device = Resolver.Resolve<IDevice>();
 
