@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.8" package="Platenburg.FamilyMenu" android:versionCode="8">
-	<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
-	<application android:label="Family Menu" android:icon="@drawable/jap_mobileapplications57x57">
-	</application>
+	<uses-sdk android:minSdkVersion="23" android:targetSdkVersion="25" />
+	<application android:label="Family Menu" android:icon="@drawable/jap_mobileapplications57x57"></application>
 	<uses-permission android:name="android.permission.INTERNET" />
 </manifest>

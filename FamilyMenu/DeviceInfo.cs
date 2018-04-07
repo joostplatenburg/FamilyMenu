@@ -118,7 +118,7 @@ namespace FamilyMenu
 			}
 
 			//_instance.deviceOrientation = Orientation;
-			_instance.rowHeight = ((Height-58)/7);
+			_instance.rowHeight = ((Height-86)/7);
 			_instance.fontSizeDay = ((Height-50)/17);
 			_instance.fontSizeDate = ((Height-50)/50);
 			_instance.fontSizeChef = ((Height-50)/42);

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using FamilyMenu.Views;
 using System.Diagnostics;
 using FamilyMenu.Services;
+using System.Globalization;
 
 namespace FamilyMenu
 {
@@ -92,15 +93,54 @@ namespace FamilyMenu
 
 				currentSaterday = value;
 
-				OnPropertyChanged ("CurrentSaterday");
-				OnPropertyChanged ("DisplayCurrentSaterday");
+				OnPropertyChanged("CurrentSaterday");
+                OnPropertyChanged("DisplayCurrentSaterday");
+                OnPropertyChanged("UseCardFrom");
 			}
 		}
 
-        public string DisplayCurrentSaterday 
-		{
-			get { return currentSaterday.ToString ("dd MMMMM yyyy"); }
-		}
+        public string DisplayCurrentSaterday
+        {
+            get { return currentSaterday.ToString("dd MMMMM yyyy"); }
+        }
+
+        public string UseCardFrom
+        {
+            get {
+                int weekNo = GetIso8601WeekOfYear(CurrentSaterday);
+
+                Debug.WriteLine("Weeknummer: " + weekNo + ", modulo 3: " + (weekNo % 3));
+
+                switch(weekNo % 3)
+                {
+                    case 0:
+                        return "CASPER";
+                    case 1:
+                        return "ISABELLE";
+                    case 2:
+                        return "MATTHIJS";
+                    default:
+                        return "Error during modulo calculation: " + weekNo;
+                }
+            }
+        }
+
+        // This presumes that weeks start with Monday.
+        // Week 1 is the 1st week of the year with a Thursday in it.
+        public static int GetIso8601WeekOfYear(DateTime time)
+        {
+            // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+            // be the same week# as whatever Thursday, Friday or Saturday are,
+            // and we always get those right
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                time = time.AddDays(3);
+            }
+
+            // Return the week of our adjusted day
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
 
 		internal async void AddNewWeek(DateTime saterday, int numberOfDays) {
 			Debug.WriteLine ("AddNewWeek: " + saterday.ToString () + " ("+numberOfDays+")");
@@ -145,7 +185,7 @@ namespace FamilyMenu
 			}
 		}
 
-		private void ExecuteNextWeekCommand()
+		internal void ExecuteNextWeekCommand()
 		{
 			CurrentSaterday = CurrentSaterday.AddDays (7);
 
@@ -168,7 +208,7 @@ namespace FamilyMenu
 			}
 		}
 
-		private  void ExecutePreviousWeekCommand()
+		internal  void ExecutePreviousWeekCommand()
 		{
 			CurrentSaterday = CurrentSaterday.AddDays (-7);
 

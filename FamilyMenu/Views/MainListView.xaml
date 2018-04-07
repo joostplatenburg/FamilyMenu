@@ -14,19 +14,29 @@
     <ContentPage.Content>
         <Grid Padding="0,10,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
                 <RowDefinition Height="2" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="12" />
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ListView Grid.Row="0" Grid.Column="0"
+            <Label Grid.Row="0" Grid.Column="0"
+                    BackgroundColor="{x:Static local:ColorResources.AccentColor}" 
+                    HeightRequest="2" />
+
+            <ListView Grid.Row="1" Grid.Column="0"
 					x:Name="list" RowHeight="{Binding RowHeight}" 
 					ItemsSource="{Binding CurrentWeek}" 
 					SelectedItem="{Binding SelectedItem}"
 					IsPullToRefreshEnabled = "true">
+                
+                <ListView.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                </ListView.GestureRecognizers>
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -87,10 +97,12 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Label Grid.Row="1" Grid.Column="0" 
-			   BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2" />
+            <Label Grid.Row="2" Grid.Column="0" HorizontalOptions="CenterAndExpand"
+                    BackgroundColor="{x:Static local:ColorResources.AccentColor}" 
+                    HeightRequest="2" FontSize = "12" TextColor = "White" 
+                    Text="{Binding UseCardFrom}" />
 
-            <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalOptions="StartAndExpand">
+            <StackLayout Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalOptions="StartAndExpand">
                 <Button 
 					x:Name="PreviousWeekButton" Image="arrow_left_blue.png"
 					Command="{Binding PreviousWeekCommand}" 
