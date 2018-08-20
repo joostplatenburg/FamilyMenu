@@ -13,10 +13,6 @@ namespace FamilyMenu.iOS
 	{
 		WebClient myWebClient = new WebClient ();
 
-		public NetworkFunctions_iOS ()
-		{
-		}
-
 		public async void callAsyncPHPScript (string commandline) {
 			Console.WriteLine ("callAsyncPHPScript - Start: " + commandline);
 
@@ -35,7 +31,7 @@ namespace FamilyMenu.iOS
 			} catch (OperationCanceledException) {
 				Console.WriteLine ("Task Cancelled");
 			} catch (Exception ex) {
-				Console.WriteLine (ex.ToString ());
+				Console.WriteLine (ex);
 			}
 
 			Console.WriteLine (bytes);

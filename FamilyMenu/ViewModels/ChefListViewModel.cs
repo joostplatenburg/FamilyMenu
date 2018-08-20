@@ -71,11 +71,11 @@ namespace FamilyMenu
 		{
             Chefs.Clear();
 
-            var chefs = await App.Database.GetChefs ();
+   //         var chefs = await App.Database.GetChefs ();
             			
-			foreach (var chef in chefs) {
-				Chefs.Add(new ChefDetailViewModel(chef, navigation));
-			}
+			//foreach (var chef in chefs) {
+			//	Chefs.Add(new ChefDetailViewModel(chef, navigation));
+			//}
 		}
 
 		private Command addCommand;

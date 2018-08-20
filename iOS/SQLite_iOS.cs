@@ -10,16 +10,12 @@ namespace FamilyMenu.iOS
 {
 	public class SQLite_iOS : ISQLite
 	{
-		public SQLite_iOS ()
-		{
-		}
-
 		#region ISQLite implementation
 		public SQLite.Net.SQLiteConnection GetConnection ()
 		{
 			var sqliteFilename = "FamilyMenu.sqlite";
-			string documentsPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal); // Documents folder
-			string libraryPath = Path.Combine (documentsPath, "..", "Library"); // Library folder
+			var documentsPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal); // Documents folder
+			var libraryPath = Path.Combine (documentsPath, "..", "Library"); // Library folder
 			var path = Path.Combine(libraryPath, sqliteFilename);
 
 			// This is where we copy in the prepopulated database

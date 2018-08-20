@@ -10,10 +10,6 @@ namespace FamilyMenu.iOS
 {
 	public class TextToSpeech_iOS : ITextToSpeech
 	{
-		public TextToSpeech_iOS ()
-		{
-		}
-
 		float volume = 0.5f;
 		float pitch = 1.0f;
 		/// <summary>

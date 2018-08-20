@@ -61,10 +61,10 @@ namespace FamilyMenu
 			get { return _entryTextColor; }
 		}
 
-		private double _width = DeviceInfo.Width - 85;
-		public double Width {
-			get { return _width; }
-		}
+		//private double _width = DeviceInfo.Width - 85;
+		//public double Width {
+		//	get { return _width; }
+		//}
 
 		private Color _buttonTextColor = ColorResources.AccentColor; 
 		public Color ButtonTextColor {
@@ -83,7 +83,7 @@ namespace FamilyMenu
 		private void ExecuteSaveCommand()
 		{
 			if (CurrentChef != null) {
-				App.Database.SaveChef(CurrentChef);
+				//App.Database.SaveChef(CurrentChef);
 			
 				MessagingCenter.Send<ChefDetailViewModel> (this, "ChefAdded");
 			}
@@ -113,7 +113,7 @@ namespace FamilyMenu
 		private void ExecuteDeleteCommand()
 		{
 			//			MessagingCenter.Send(this, "Deleted " + Name);
-			App.Database.DeleteChef (CurrentChef.ID);
+			//App.Database.DeleteChef (CurrentChef.ID);
 
 			try {
 				string urlPhp = string.Format(App.deleteChefStm, CurrentChef.ID);

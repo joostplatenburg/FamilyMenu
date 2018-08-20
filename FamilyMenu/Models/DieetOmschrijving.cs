@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using SQLite.Net.Attributes;
 using Xamarin.Forms;
 
 namespace FamilyMenu

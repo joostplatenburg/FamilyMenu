@@ -1,41 +1,37 @@
 ﻿using System;
-using System.ComponentModel;
-using Xamarin.Forms;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using FamilyMenu.Services;
+using Xamarin.Forms;
 
 namespace FamilyMenu
 {
-	public class DetailsViewModel : INotifyPropertyChanged
+    public class DetailsViewModel : INotifyPropertyChanged
 	{
-		private MenuEntryViewModel currentMenuEntryViewModel;
+        private MainListViewModel mainListVM;
 
-		private INavigation navigation;
+        public DetailsViewModel(MenuEntry me, MainListViewModel _mainListVM)
+        {
+            Debug.WriteLine(string.Format("JAP001 - Start DetailsViewModel({0})", me.Datum));
 
-		public DetailsViewModel(MenuEntryViewModel _mevm, INavigation navigation)
-		{
-			this.navigation = navigation;
+            CurrentEntry = me;
+            mainListVM = _mainListVM;
 
-			currentMenuEntryViewModel = _mevm;
+            FillSelectListChefs();
 
-			FillSelectListChefs();
-
-			Datum = currentMenuEntryViewModel.Datum;
-			Chef = currentMenuEntryViewModel.Chef;
-			Omschrijving = currentMenuEntryViewModel.Omschrijving;
-		}
+            Datum = me.Datum;
+            Chef = me.Chef;
+            Omschrijving = me.Omschrijving;
+        }
 
         private void FillSelectListChefs()
         {
 			_Chefs.Clear();
             _Chefs.Add("Choose a chef");
 
-            var chefs = App.Database.GetLocalChefs();
-
-			Debug.WriteLine ("Aantal Chefs: " + chefs.Count);
-            foreach (var chef in chefs)
+            foreach (var chef in App.Chefs)
             {
 				_Chefs.Add(chef.Name);
             }
@@ -54,55 +50,64 @@ namespace FamilyMenu
 		}
 
 		#endregion
+        private MenuEntry _currentEntry;
+        public MenuEntry CurrentEntry
+        {
+          get { return _currentEntry; } 
+          set { 
+              if (_currentEntry == value)
+                  return;
 
-		public DateTime Datum 
+              _currentEntry = value;
+
+              OnPropertyChanged ("CurrentEntry");
+          }
+        }
+
+        public string Datum 
 		{
-			get { return currentMenuEntryViewModel.Datum; } 
+            get { return CurrentEntry.Datum; } 
 			set { 
-				if (currentMenuEntryViewModel.Datum == value)
+                if (CurrentEntry.Datum == value)
 					return;
 
-				currentMenuEntryViewModel.Datum = value;
+                CurrentEntry.Datum = value;
 
 				OnPropertyChanged ("Datum");
 			}
 		}
 
-		public string DatumString {
-			get { return Datum.ToString ("D"); }
-		}
-
 		public string Chef { 
-			get { return currentMenuEntryViewModel.Chef; }
+            get { return CurrentEntry.Chef; }
 			set {
-				if (currentMenuEntryViewModel.Chef == value)
+                if (CurrentEntry.Chef == value)
 					return;
 
-				currentMenuEntryViewModel.Chef = value;
+                CurrentEntry.Chef = value;
 
 				OnPropertyChanged ("Chef"); 
 			}
 		}
 
 		public string Omschrijving { 
-			get { return currentMenuEntryViewModel.Omschrijving; }
+            get { return CurrentEntry.Omschrijving; }
 			set {
-				if (currentMenuEntryViewModel.Omschrijving == value)
+                if (CurrentEntry.Omschrijving == value)
 					return;
 
-				currentMenuEntryViewModel.Omschrijving = value;
+                CurrentEntry.Omschrijving = value;
 
 				OnPropertyChanged ("Omschrijving"); 
 			}
 		}
 
 		public string Dieet { 
-			get { return currentMenuEntryViewModel.Dieet; }
+            get { return CurrentEntry.Dieet; }
 			set {
-				if (currentMenuEntryViewModel.Dieet == value)
+                if (CurrentEntry.Dieet == value)
 					return;
 
-				currentMenuEntryViewModel.Dieet = value;
+                CurrentEntry.Dieet = value;
 
 				OnPropertyChanged ("Dieet"); 
 			}
@@ -114,34 +119,48 @@ namespace FamilyMenu
 		}
 
 		#region Commands
-
-		private Command saveCommand;
-		public Command SaveCommand {
-			get {
-				return saveCommand ?? (saveCommand = new Command(ExecuteSaveCommand));
-			}
-		}
-
-		private async void ExecuteSaveCommand()
+		public async Task<bool> ExecuteSaveCommand()
 		{
-			if (currentMenuEntryViewModel != null)
-				App.Database.SaveItem (currentMenuEntryViewModel.CurrentMenuEntry);
-
 			try
 			{
-                var sv = new UpdateMenuEntryWebService();
-                var rc = await sv.UpdateMenuAsync(currentMenuEntryViewModel.CurrentMenuEntry);
+                var client = new FamilyMenuServices();
+                var rc = await client.UpdateMenuAsync(CurrentEntry);
 
-				MessagingCenter.Send<DetailsViewModel> (this, "UpdateListView");
+                Debug.WriteLine("UpdateMenuAsync: " + rc);
 
-				Debug.WriteLine("ExecuteSaveCommand: " + rc);
+                // Nu de mainlist UI update forceren
+                var currentDate = DateTime.Parse(CurrentEntry.Datum);
+
+                switch (currentDate.DayOfWeek)
+                {
+                    case DayOfWeek.Saturday:
+                        mainListVM.Zaterdag = CurrentEntry;
+                        break;
+                    case DayOfWeek.Sunday:
+                        mainListVM.Zondag = CurrentEntry;
+                        break;
+                    case DayOfWeek.Monday:
+                        mainListVM.Maandag = CurrentEntry;
+                        break;
+                    case DayOfWeek.Tuesday:
+                        mainListVM.Dinsdag = CurrentEntry;
+                        break;
+                    case DayOfWeek.Wednesday:
+                        mainListVM.Woensdag = CurrentEntry;
+                        break;
+                    case DayOfWeek.Thursday:
+                        mainListVM.Donderdag = CurrentEntry;
+                        break;
+                    case DayOfWeek.Friday:
+                        mainListVM.Vrijdag = CurrentEntry;
+                        break;
+                }
 			}
-			catch(Exception) {
-
+			catch(Exception ex) {
+                Debug.WriteLine("ExecuteSaveCommand: " + ex.Message);
+                return false;
 			}
-
-			// No go back to main page with week menu
-			await navigation.PopToRootAsync ();
+            return true;
 		}
 
 		private Command pickCommand;
@@ -153,20 +172,20 @@ namespace FamilyMenu
 
 		private void ExecutePickCommand()
 		{
-			navigation.PushAsync (new MenuHistoryView (this));
+			
 		}
 
-		private void ExecutePickDieetCommand()
-		{
-			navigation.PushAsync (new MenuDieetHistoryView (this));
-		}
+		//private void ExecutePickDieetCommand()
+		//{
+		//	navigation.PushAsync (new MenuDieetHistoryView (this));
+		//}
 
-		private Command pickDieetCommand;
-		public Command PickDieetCommand {
-			get {
-				return pickDieetCommand ?? (pickDieetCommand = new Command(ExecutePickDieetCommand));
-			}
-		}
+		//private Command pickDieetCommand;
+		//public Command PickDieetCommand {
+		//	get {
+		//		return pickDieetCommand ?? (pickDieetCommand = new Command(ExecutePickDieetCommand));
+		//	}
+		//}
 
 		#endregion
 
@@ -174,7 +193,7 @@ namespace FamilyMenu
 		/// <summary>
 		/// Thes values are depended on device orientation
 		/// </summary>
-		public double Width { get { return DeviceInfo.Width - 85; } }
+		//public double Width { get { return DeviceInfo.Width - 85; } }
 
 		#endregion VisualElement properties
 

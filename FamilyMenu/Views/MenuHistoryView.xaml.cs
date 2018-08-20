@@ -8,13 +8,18 @@ namespace FamilyMenu
 {
 	public partial class MenuHistoryView : ContentPage
 	{
-		public MenuHistoryView (DetailsViewModel currentDetailsViewModel)
+        public MenuHistoryView()
+        {
+            InitializeComponent();
+        }
+
+        public MenuHistoryView (DetailsViewModel currentDetailsViewModel)
 		{
 			InitializeComponent ();
 
 			BindingContext = new MenuHistoryViewModel ();
 
-			list.ItemTapped += (sender, e) => {
+            list.ItemTapped += (sender, e) => {
 				Debug.WriteLine ("Start - MainListView.ItemTapped");
 
 				MenuOmschrijving currentItem = e.Item as MenuOmschrijving;

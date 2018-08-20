@@ -1,20 +1,19 @@
 ﻿using System;
-using SQLite.Net.Attributes;
 using Xamarin.Forms;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace FamilyMenu
 {
 	public class MenuEntry
     {
-		[PrimaryKey]
 		public int ID { get; set; }
 		public string Datum {	get ; set; }
 		public string Chef { get; set; }
 		public string Omschrijving { get; set; }
-		public String Date { get; set; }
-		public String Time { get; set; }
-		public String DeviceName { get; set; }
+		public string Date { get; set; }
+		public string Time { get; set; }
+		public string DeviceName { get; set; }
 		public string Dieet { get; set; }
 		public string AantalDieet { get; set; }
 	}
@@ -22,7 +21,7 @@ namespace FamilyMenu
     public class Week
     {
         public string startdate { get; set; }
-        public MenuEntry[] week { get; set; }
+        public List<MenuEntry> week { get; set; }
     }
 
     public class Rootobject

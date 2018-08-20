@@ -1,5 +1,4 @@
 using System;
-using SQLite.Net;
 using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
@@ -59,6 +58,7 @@ namespace FamilyMenu
                 + string.Format("{0:D2}", currentSaterday.Day);
 
             var sv = new GetWeekWebService();
+
             var es = await sv.GetWeekAsync(startdatum);
 
             List<MenuEntry> lijstje = es.ToList<MenuEntry>();
@@ -77,12 +77,12 @@ namespace FamilyMenu
 			}
 		}
 
-		public MenuEntry GetItemByDatum (string datum)
-		{
-			lock (locker) {
-				return database.Table<MenuEntry>().FirstOrDefault(x => x.Datum == datum);
-			}
-		}
+		//public MenuEntry GetItemByDatum (string datum)
+		//{
+		//	lock (locker) {
+		//		return database.Table<MenuEntry>().FirstOrDefault(x => x.Datum == datum);
+		//	}
+		//}
 
 		public int SaveItem (MenuEntry item)
 		{

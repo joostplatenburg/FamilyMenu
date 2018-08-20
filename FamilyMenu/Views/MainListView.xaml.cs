@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using Xamarin.Forms;
 //using Xamarin.Forms.Labs.Controls;
 
@@ -11,6 +8,7 @@ namespace FamilyMenu.Views
     public partial class MainListView : ContentPage
     {
         private MainListViewModel vm;
+
         private string CurrentOrientation = string.Empty;
         private string NewOrientation = string.Empty;
 
@@ -26,43 +24,33 @@ namespace FamilyMenu.Views
 
             BindingContext = vm;
 
-            list.ItemTapped += (sender, e) =>
-            {
-                Debug.WriteLine("Start - MainListView.ItemTapped");
-                // do something with e.Item
+            psZaterdag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Zaterdag, vm)); }) });
 
-                Navigation.PushAsync(new DetailsView(((ListView)sender).SelectedItem));
+            psZondag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Zondag, vm)); }) });
 
-                ((ListView)sender).SelectedItem = null; // de-select the row
-                Debug.WriteLine("End - MainListView.ItemTapped");
-            };
+            psMaandag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Maandag, vm)); }) });
 
-            list.Refreshing += (sender, e) =>
-            {
-                Debug.WriteLine("Start - MainListView.Refreshing");
+            psDinsdag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Dinsdag, vm)); }) });
 
-                list.EndRefresh();
+            psWoensdag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Woensdag, vm)); }) });
 
-                Debug.WriteLine("Einde - MainListView.Refreshing");
-            };
+            psDonderdag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Donderdag, vm)); }) });
 
-            vm.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
-            {
-                Debug.WriteLine("Start vm.PropertyChanged(" + e.PropertyName + ")");
-
-                if (e.PropertyName.Equals("CurrentWeek"))
-                {
-                    this.list.ItemsSource = vm.CurrentWeek;
-                    this.list.RowHeight = vm.RowHeight;
-                    this.ThisWeekButton.Text = vm.DisplayCurrentSaterday;
-
-                }
-                else if (e.PropertyName.Equals("RowHeight"))
-                {
-                    this.list.RowHeight = vm.RowHeight;
-                    this.list.ItemsSource = vm.CurrentWeek;
-                }
-            };
+            psVrijdag.GestureRecognizers.Add(
+                new TapGestureRecognizer()
+            { Command = new Command(() => { Navigation.PushAsync(new DetailsView(vm.Vrijdag, vm)); }) });
         }
 
         protected override void OnAppearing()
@@ -79,48 +67,50 @@ namespace FamilyMenu.Views
             base.OnBindingContextChanged();
         }
 
+        public double width { get; set; }
+        public double height { get; set; }
+
         protected override void OnSizeAllocated(double width, double height)
         {
-            Debug.WriteLine("Start MainListView.OnSizeAllocated(" + width + "," + height + ")");
+            Debug.WriteLine("JAP001 - Start MainListView.OnSizeAllocated(" + width + "," + height + ")");
 
             base.OnSizeAllocated(width, height);
 
-            Debug.WriteLine("CurrentOrientation: " + CurrentOrientation);
-
-            if ((width + 2) > height)
-            {                   // Add 2 to compensate for the iPad MDPage width)
-                NewOrientation = "Landscape";
-                Debug.WriteLine("NewOrientation: Landscape");
-            }
-            else
+            if (width != this.width || height != this.height)
             {
-                NewOrientation = "Portrait";
-                Debug.WriteLine("NewOrientation: Portrait");
-            }
+                this.width = width;
+                this.height = height;
 
-            if (!CurrentOrientation.Equals(NewOrientation))
-            {
-                CurrentOrientation = NewOrientation;
-
-                DeviceInfo.SetSize(width, height, CurrentOrientation);
-
-                list.RowHeight = vm.RowHeight;
-
-                if (CurrentOrientation.Equals("Portrait"))
+                if (width > height)
                 {
+                    /// ========================================================
+                    /// === landscape
+                    /// ===
+                    Debug.WriteLine("Landscape width: " + width);
+                    Debug.WriteLine("Landscape height: " + height);
+
                     PreviousWeekButton.WidthRequest = (width / 10);
                     NextWeekButton.WidthRequest = (width / 10);
-                    ThisWeekButton.WidthRequest = (width * 7 / 10);
+                    ThisWeekButton.WidthRequest = (width * 8.5 / 10);
                 }
                 else
                 {
-                    PreviousWeekButton.WidthRequest = (width / 10);
-                    NextWeekButton.WidthRequest = (width / 10);
-                    ThisWeekButton.WidthRequest = (width * 7.5 / 10);
-                }
+                    /// ========================================================
+                    /// === portrait
+                    /// ===
+                    Debug.WriteLine("Portrait width: " + width);
+                    Debug.WriteLine("Portrait height: " + height);
 
-                vm.CurrentWeekCommand.Execute(null);
+                    PreviousWeekButton.WidthRequest = ((width / 9) * 1.5);
+                    NextWeekButton.WidthRequest = ((width / 9) * 1.5);
+                    ThisWeekButton.WidthRequest = ((width / 9) * 5);
+                }
             }
+
+            vm.CurrentWeekCommand.Execute(null);
+
+            //var orientation = DependencyService.Get<IDeviceOrientation>().GetOrientation();
+            //Debug.WriteLine("Orientation: " + orientation);
         }
 
         void OnClick(object sender, EventArgs e)
@@ -137,40 +127,40 @@ namespace FamilyMenu.Views
         internal void OnPanUpdated(object sender, PanUpdatedEventArgs e)
         {
             // Handle the pan
-            switch (e.StatusType)
-            {
-                case GestureStatus.Running:
-                    // Translate and ensure we don't pan beyond the wrapped user interface element bounds.
-                    //Content.TranslationX =
-                    //  Math.Max(Math.Min(0, x + e.TotalX), -Math.Abs(Content.Width - App.ScreenWidth));
+            //switch (e.StatusType)
+            //{
+            //    case GestureStatus.Running:
+            //        // Translate and ensure we don't pan beyond the wrapped user interface element bounds.
+            //        //Content.TranslationX =
+            //        //  Math.Max(Math.Min(0, x + e.TotalX), -Math.Abs(Content.Width - App.ScreenWidth));
 
-                    Math.Min(0, x + e.TotalX);
+            //        Math.Min(0, x + e.TotalX);
 
-                    if(e.TotalX > 0) {
-                        SwapDirection = "Right";
-                    } else {
-                        SwapDirection = "Left";
-                    }
+            //        if(e.TotalX > 0) {
+            //            SwapDirection = "Right";
+            //        } else {
+            //            SwapDirection = "Left";
+            //        }
 
-                    break;
+            //        break;
 
-                case GestureStatus.Completed:
+            //    case GestureStatus.Completed:
 
-                    // Store the translation applied during the pan
-                    x = e.TotalX;
+            //        // Store the translation applied during the pan
+            //        x = e.TotalX;
 
-                    Debug.WriteLine("Swiped Direction: " + SwapDirection);
+            //        Debug.WriteLine("Swiped Direction: " + SwapDirection);
 
-                    if (SwapDirection == "Right") {
-                        vm.ExecutePreviousWeekCommand();
+            //        if (SwapDirection == "Right") {
+            //            vm.ExecutePreviousWeekCommand();
 
-                    } else if (SwapDirection == "Left")  {
-                        vm.ExecuteNextWeekCommand();
+            //        } else if (SwapDirection == "Left")  {
+            //            vm.ExecuteNextWeekCommand();
 
-                    }
+            //        }
 
-                    break;
-            }
+            //        break;
+            //}
         }
 
         string SwapDirection = string.Empty;

@@ -1,132 +1,208 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
-				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-				xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
-				x:Class="FamilyMenu.Views.MainListView" 
-				Title="Family Menu"
-				Padding="{x:Static local:PaddingResources.PagePadding}"
-				BackgroundColor="{x:Static local:ColorResources.PageBackgroundColor}" >
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
+             x:Class="FamilyMenu.Views.MainListView"
+             Title="Family Menu" >
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Icon="ic_drawer.png" Activated="OnClick" />
     </ContentPage.ToolbarItems>
-
+    
     <ContentPage.Content>
         <Grid Padding="0,10,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="12" />
-                <RowDefinition Height="40" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <Label Grid.Row="0" Grid.Column="0"
-                    BackgroundColor="{x:Static local:ColorResources.AccentColor}" 
-                    HeightRequest="2" />
-
-            <ListView Grid.Row="1" Grid.Column="0"
-					x:Name="list" RowHeight="{Binding RowHeight}" 
-					ItemsSource="{Binding CurrentWeek}" 
-					SelectedItem="{Binding SelectedItem}"
-					IsPullToRefreshEnabled = "true">
+            <BoxView Grid.Row="0" Style="{StaticResource boxViewStyle1}" />
+            <StackLayout Grid.Row="1" VerticalOptions="FillAndExpand">
+                <!-- Zaterdag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psZaterdag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Sat" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Zaterdag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Zaterdag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Zaterdag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
                 
-                <ListView.GestureRecognizers>
-                    <PanGestureRecognizer PanUpdated="OnPanUpdated" />
-                </ListView.GestureRecognizers>
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="2" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <StackLayout Grid.Row="0" Grid.Column="0" 
-											Orientation="Vertical" Spacing="0" Padding="0"
-											VerticalOptions="Start" 
-											WidthRequest="{Binding DayColumnWidth}">
-                                    <Label HorizontalOptions="Center" 
-											FontSize="{Binding DayFontSize}" 
-											FontFamily="{x:Static local:FontResources.FontFamily}" 
-											TextColor="{x:Static local:ColorResources.LabelTextColor}"
-											HeightRequest="{Binding DayHeight}" 
-											XAlign="Center" YAlign="Start" 
-											Text="{Binding Datum, StringFormat='{0:ddd}'}" />
-                                    <Label HorizontalOptions="Center" 
-											FontSize="{Binding DateFontSize}" 
-											FontFamily="{x:Static local:FontResources.FontFamily}" 
-											TextColor="{x:Static local:ColorResources.LabelTextColor}"  
-											XAlign="Center" YAlign="Start" 
-											Text="{Binding Datum, StringFormat='{0:dd-MM-yyyy}'}" />
-                                </StackLayout>
-
-                                <StackLayout Grid.Row="0" Grid.Column="1"
-											Orientation="Vertical" Spacing="0" Padding="0"
-											VerticalOptions="Start">
-                                    <Label HorizontalOptions="Start" 
-											FontSize="{Binding ChefFontSize}" 
-											FontFamily="{x:Static local:FontResources.FontFamily}" 
-											TextColor="{x:Static local:ColorResources.LabelTextColor}"  
-											HeightRequest="{Binding ChefHeight}" 
-											XAlign="Start" YAlign="Start" 
-											Text="{Binding Chef}" />
-                                    <Label HorizontalOptions="StartAndExpand" 
-											FontSize = "{Binding OmschrijvingFontSize}" 
-											FontFamily="{x:Static local:FontResources.FontFamily}" 
-											TextColor = "Black" 
-											HeightRequest="{Binding OmschrijvingHeight}" 
-											XAlign="Start" YAlign="Start" 
-											Text="{Binding OmschrijvingWithDieet}" 
-											LineBreakMode="WordWrap" />
-                                </StackLayout>
-
-                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-											BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2"/>
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <Label Grid.Row="2" Grid.Column="0" HorizontalOptions="CenterAndExpand"
-                    BackgroundColor="{x:Static local:ColorResources.AccentColor}" 
-                    HeightRequest="2" FontSize = "12" TextColor = "White" 
-                    Text="{Binding UseCardFrom}" />
-
-            <StackLayout Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalOptions="StartAndExpand">
-                <Button 
-					x:Name="PreviousWeekButton" Image="arrow_left_blue.png"
-					Command="{Binding PreviousWeekCommand}" 
-					VerticalOptions="Center" 
-					BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}">
-                </Button>
-
-                <Button 
-					x:Name="ThisWeekButton" Text="{Binding DisplayCurrentSaterday}" 
-					HorizontalOptions="CenterAndExpand"  
-					Command="{Binding ThisWeekCommand}" TextColor="{x:Static local:ColorResources.ButtonTextColor}"
-					FontFamily="{x:Static local:FontResources.FontFamily}"
-					BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}">
-                </Button>
-
-                <Button 
-					x:Name="NextWeekButton" Image="arrow_right_blue.png"
-					Command="{Binding NextWeekCommand}"
-					VerticalOptions="Center" 
-					BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}">
-                </Button>
+                <!-- Zondag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psZondag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Sun" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Zondag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Zondag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Zondag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
+                <!-- Maandag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psMaandag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Mon" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Maandag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Maandag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Maandag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
+                <!-- Dinsdag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psDinsdag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Tue" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Dinsdag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Dinsdag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Dinsdag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
+                <!-- Woensdag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psWoensdag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Wed" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Woensdag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Woensdag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Woensdag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
+                <!-- Donderdag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psDonderdag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Thu" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Donderdag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Donderdag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Donderdag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
+                <!-- Vrijdag -->
+                <StackLayout Orientation="Vertical">
+                    <StackLayout x:Name="psVrijdag" Orientation="Horizontal">
+                        <StackLayout Style="{StaticResource stackLayoutStyle1}">
+                            <Label Style="{StaticResource labelStyleDay}" Text="Fri" />
+                            <Label Style="{StaticResource labelStyleDate}" Text="{Binding Vrijdag.Datum, StringFormat='{0:dd-MM-yyyy}'}" />
+                        </StackLayout>
+                        <StackLayout Style="{StaticResource stackLayoutStyle2}">
+                            <Label Style="{StaticResource labelStyleChef}" Text="{Binding Vrijdag.Chef}" />
+                            <Label Style="{StaticResource labelStyleMenuEntry}" Text="{Binding Vrijdag.Omschrijving}" />
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView Style="{StaticResource boxViewStyle1}" />
+                </StackLayout>
             </StackLayout>
 
+            <Label Grid.Row="2" Grid.Column="0" HorizontalOptions="CenterAndExpand" BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2" FontSize="12" TextColor="White" Text="{Binding UseCardFrom}" />
+
+            <StackLayout Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalOptions="CenterAndExpand" Margin="5">
+                <Button x:Name="PreviousWeekButton" Image="arrow_left_blue.png" 
+                        Command="{Binding PreviousWeekCommand}" VerticalOptions="Center" 
+                        BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}" />
+                <Button x:Name="ThisWeekButton" Text="{Binding DisplayCurrentSaterday}" HorizontalOptions="CenterAndExpand" Command="{Binding ThisWeekCommand}" TextColor="{x:Static local:ColorResources.ButtonTextColor}" FontFamily="{x:Static local:FontResources.FontFamily}" BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}" />
+                <Button x:Name="NextWeekButton" Image="arrow_right_blue.png" Command="{Binding NextWeekCommand}" VerticalOptions="Center" BackgroundColor="{x:Static local:ColorResources.ButtonBackgroundColor}" />
+            </StackLayout>
         </Grid>
     </ContentPage.Content>
-
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="labelStyleDay" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="FontSize" Value="34" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="HeightRequest" Value="80" />
+                <Setter Property="WidthRequest" Value="90" />
+                <Setter Property="XAlign" Value="Center" />
+                <Setter Property="YAlign" Value="Start" />
+            </Style>
+            <Style x:Key="labelStyleDate" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="XAlign" Value="Center" />
+                <Setter Property="YAlign" Value="Start" />
+            </Style>
+            <Style x:Key="labelStyleChef" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <Style x:Key="labelStyleMenuEntry" TargetType="Label">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="FontAttributes" Value="Italic" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.EntryTextColor}" />
+            </Style>
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="WidthRequest" Value="200" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+            <Style x:Key="boxViewStyle1" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="2" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="BackgroundColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+            </Style>
+            <Style x:Key="stackLayoutStyle1" TargetType="StackLayout">
+                <Setter Property="Orientation" Value="Vertical" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="WidthRequest" Value="100" />
+            </Style>
+            <Style x:Key="stackLayoutStyle2" TargetType="StackLayout">
+                <Setter Property="Orientation" Value="Vertical" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="WidthRequest" Value="300" />
+            </Style>
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="Black" />
+                <Setter Property="BorderRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="35" />
+                <Setter Property="WidthRequest" Value="100" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="IsEnabled" Value="true" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 </ContentPage>

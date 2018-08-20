@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using Xamarin.Essentials;
 
 namespace FamilyMenu.Services
 {
@@ -23,6 +24,8 @@ namespace FamilyMenu.Services
             var client = new System.Net.Http.HttpClient();
 
             client.BaseAddress = new Uri("http://www.platenburg.eu/php/FamilyMenu/");
+
+            var deviceName = DeviceInfo.Name;
 
             var command = string.Format(UpdateStm,
                     updatedMenu.ID, updatedMenu.Datum,
