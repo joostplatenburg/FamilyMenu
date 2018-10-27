@@ -19,10 +19,13 @@ namespace FamilyMenu.Services
         HttpClient client;
 
         string InsertStm = @"insert.php?id={0}&dt={1}&kk='{2}'&om='{3}'&di='{4}'&dn='{5}'";
+        string updateChefStm = @"updateChef.php?id={0}&name={1}&dn='{2}'";
+        string deleteChefStm = @"deleteChef.php?id={0}";
+
 
         public FamilyMenuServices() 
         {
-            Debug.WriteLine("Start GetWeekWebService()");
+            Debug.WriteLine("JAP001 - FamilyMenuServices()");
 
             client = new HttpClient();
 
@@ -31,13 +34,13 @@ namespace FamilyMenu.Services
 
         public async Task<Week> GetWeekAsync(string startdatum)
         {
-            Debug.WriteLine("Start GetWeekAsync(" + startdatum + ")");
+            Debug.WriteLine(string.Format("JAP001 - FamilyMenuServices.GetWeekAsync({0})", startdatum));
 
             try
             {
                 var service = string.Format("getweek.json.php?datum={0}", startdatum);
 
-                Debug.WriteLine("JAP001 - " + client.BaseAddress + service);
+                Debug.WriteLine(string.Format("JAP001 - > Request: {0}{1}", client.BaseAddress, service));
 
                 var response = client.GetAsync(service).Result;
 
@@ -47,7 +50,7 @@ namespace FamilyMenu.Services
                 {
                     var weekJson = await response.Content.ReadAsStringAsync();
 
-                    Debug.WriteLine(weekJson);
+                    Debug.WriteLine("JAP001 - > Response: " + weekJson);
 
                     var week = JsonConvert.DeserializeObject<Week>(weekJson);
 
@@ -56,16 +59,9 @@ namespace FamilyMenu.Services
 
                 return null;
             }
-            catch (System.Net.WebException)
-            {
-                Debug.WriteLine(HttpStatusCode.InternalServerError);
-
-                return null;
-
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(string.Format("JAP001 - Response: {0}", ex.Message));
 
                 return null;
             }
@@ -73,13 +69,13 @@ namespace FamilyMenu.Services
 
         public async Task<ObservableCollection<Chef>> GetChefsAsync()
         {
-            Debug.WriteLine("Start GetChefsAsync()");
+            Debug.WriteLine("JAP001 - FamilyMenuServices.GetChefsAsync()");
 
             try
             {
                 var service = string.Format("getchefs.json.php");
 
-                Debug.WriteLine("JAP001 - " + client.BaseAddress + service);
+                Debug.WriteLine(string.Format("JAP001 - > Request: {0}{1}", client.BaseAddress, service));
 
                 var response = await client.GetAsync(service);
 
@@ -89,7 +85,7 @@ namespace FamilyMenu.Services
                 {
                     var json = response.Content.ReadAsStringAsync().Result;
 
-                    Debug.WriteLine(json);
+                    Debug.WriteLine("JAP001 - " + json);
 
                     var chefs = JsonConvert.DeserializeObject<Chefs>(json);
 
@@ -98,16 +94,9 @@ namespace FamilyMenu.Services
 
                 return null;
             }
-            catch (System.Net.WebException)
-            {
-                Debug.WriteLine(HttpStatusCode.InternalServerError);
-
-                return null;
-
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(string.Format("JAP001 - {0}", ex.Message));
 
                 return null;
             }
@@ -115,21 +104,20 @@ namespace FamilyMenu.Services
 
         public async Task<Boolean> UpdateMenuAsync(MenuEntry updatedMenu)
         {
-            Debug.WriteLine("Start UpdateMenuAsync(" + updatedMenu.Datum + ")");
+            Debug.WriteLine(string.Format("JAP001 - FamilyMenuServices.UpdateMenuAsync({0})", updatedMenu.Datum));
 
             try
             {
                 var deviceName = Xamarin.Essentials.DeviceInfo.Name;
 
-                //var datum = updatedMenu.Datum.Year + "-"
-                                       //+ string.Format("{0:D2}", updatedMenu.Datum.Month) + "-"
-                                       //+ string.Format("{0:D2}", updatedMenu.Datum.Day);
+                var dt = DateTime.Parse(updatedMenu.Datum);
+                var datum = string.Format("{0}-{1:D2}-{2:D2}", dt.Year, dt.Month, dt.Day);
 
+                //www.platenburg.eu/php/FamilyMenu/update.php?dt=2018-10-13&kk='Choose a chef'&om='Tomatensoepjes stokbrood'&dn='DESKTOP-PVLPC2P'
 
-                var service = string.Format("update.php?id={0}&dt={1}&kk='{2}'&om='{3}'&di='{4}'&dn='{5}'", updatedMenu.ID, updatedMenu.Datum,
-                                            updatedMenu.Chef, updatedMenu.Omschrijving, updatedMenu.Dieet, deviceName);
+                var service = string.Format("update.php?dt={0}&kk='{1}'&om='{2}'&dn='{3}'", datum, updatedMenu.Chef, updatedMenu.Omschrijving, deviceName);
 
-                Debug.WriteLine("JAP001 - " + client.BaseAddress + service);
+                Debug.WriteLine(string.Format("JAP001 - > Request: {0}{1}", client.BaseAddress, service));
 
                 var response = await client.GetAsync(service);
 
@@ -146,16 +134,9 @@ namespace FamilyMenu.Services
 
                 return false;
             }
-            catch (System.Net.WebException)
-            {
-                Debug.WriteLine(HttpStatusCode.InternalServerError);
-
-                return false;
-
-            }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(string.Format("JAP001 - {0}", ex.Message));
 
                 return false;
             }
@@ -163,9 +144,11 @@ namespace FamilyMenu.Services
 
         public async Task<string> GetHighestIDAsync()
         {
-            Debug.WriteLine("Start GetHighestIDAsync()");
+            Debug.WriteLine("JAP001 - FamilyMenuServices.GetHighestIDAsync()");
 
             var service = "getHighestID.php";
+
+            Debug.WriteLine(string.Format("JAP001 - > Request: {0}{1}", client.BaseAddress, service));
 
             var response = await client.GetAsync(service);
 
@@ -178,16 +161,16 @@ namespace FamilyMenu.Services
 
         public async Task<Boolean> InsertMenuAsync(MenuEntry insertedMenu)
         {
-            Debug.WriteLine("Start InsertMenuAsync(" + insertedMenu.Datum + ")");
+            Debug.WriteLine(string.Format("JAP001 - FamilyMenuServices.InsertMenuAsync({0})", insertedMenu.Datum));
 
-            var command = string.Format(InsertStm,
+            var service = string.Format(InsertStm,
                     insertedMenu.ID, insertedMenu.Datum,
-                    insertedMenu.Chef, insertedMenu.Omschrijving, insertedMenu.Dieet,
+                    insertedMenu.Chef, insertedMenu.Omschrijving, 
                     App.DeviceName);
 
-            Debug.WriteLine("Command: " + client.BaseAddress + command);
+            Debug.WriteLine(string.Format("JAP001 - > Request: {0}{1}", client.BaseAddress, service));
 
-            var response = await client.GetAsync(command);
+            var response = await client.GetAsync(service);
 
             var returnVal = response.Content.ReadAsStringAsync().Result;
 
@@ -198,11 +181,13 @@ namespace FamilyMenu.Services
 
         public async Task<MenuOmschrijving[]> GetMenuOmschrijvingenAsync()
         {
-            Debug.WriteLine("Start GetMenuOmschrijvingenAsync()");
+            Debug.WriteLine("JAP001 - FamilyMenuServices.GetMenuOmschrijvingenAsync()");
 
-            var command = "getMenuOmschrijvingen.json.php";
+            var service = "getMenuOmschrijvingen.json.php";
 
-            var response = await client.GetAsync(command);
+            Debug.WriteLine(string.Format("JAP001 - > Request: {0}{1}", client.BaseAddress, service));
+
+            var response = await client.GetAsync(service);
 
             var menuOmschrijvingenJson = response.Content.ReadAsStringAsync().Result;
 

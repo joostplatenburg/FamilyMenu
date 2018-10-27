@@ -12,6 +12,14 @@ namespace FamilyMenu
 	{
         private MainListViewModel mainListVM;
 
+        #region Constructors
+        public DetailsViewModel()
+        {
+            Debug.WriteLine(string.Format("JAP001 - Start DetailsViewModel()"));
+
+            FillSelectListChefs();
+        }
+
         public DetailsViewModel(MenuEntry me, MainListViewModel _mainListVM)
         {
             Debug.WriteLine(string.Format("JAP001 - Start DetailsViewModel({0})", me.Datum));
@@ -21,19 +29,37 @@ namespace FamilyMenu
 
             FillSelectListChefs();
 
-            Datum = me.Datum;
+            Datum = DateTime.Parse(me.Datum);
             Chef = me.Chef;
             Omschrijving = me.Omschrijving;
         }
 
+        public DetailsViewModel(MenuEntryViewModel mevm)
+        {
+            Debug.WriteLine(string.Format("JAP001 - Start DetailsViewModel({0})", mevm.Datum));
+
+            CurrentEntry = mevm.CurrentMenuEntry;
+
+            FillSelectListChefs();
+
+            Datum = mevm.Datum;
+            Chef = mevm.Chef;
+            Omschrijving = mevm.Omschrijving;
+
+            AllMenuEntries = new ObservableCollection<MenuOmschrijving>();
+
+            GetOmschrijvingen();
+        }
+        #endregion Constructors
+
         private void FillSelectListChefs()
         {
-			_Chefs.Clear();
-            _Chefs.Add("Choose a chef");
+			Chefs.Clear();
+            Chefs.Add("Choose a chef");
 
             foreach (var chef in App.Chefs)
             {
-				_Chefs.Add(chef.Name);
+				Chefs.Add(chef.Name);
             }
         }
 
@@ -64,20 +90,25 @@ namespace FamilyMenu
           }
         }
 
-        public string Datum 
+        public DateTime Datum 
 		{
-            get { return CurrentEntry.Datum; } 
-			set { 
-                if (CurrentEntry.Datum == value)
-					return;
+            get {
+                DateTime dt = DateTime.Parse(CurrentEntry.Datum);
 
-                CurrentEntry.Datum = value;
+                return dt; 
+            }
+            set
+            {
+                if (CurrentEntry.Datum == value.ToString())
+                    return;
 
-				OnPropertyChanged ("Datum");
-			}
-		}
+                CurrentEntry.Datum = value.ToString();
 
-		public string Chef { 
+                OnPropertyChanged("Datum");
+            }
+        }
+
+        public string Chef { 
             get { return CurrentEntry.Chef; }
 			set {
                 if (CurrentEntry.Chef == value)
@@ -101,18 +132,6 @@ namespace FamilyMenu
 			}
 		}
 
-		public string Dieet { 
-            get { return CurrentEntry.Dieet; }
-			set {
-                if (CurrentEntry.Dieet == value)
-					return;
-
-                CurrentEntry.Dieet = value;
-
-				OnPropertyChanged ("Dieet"); 
-			}
-		}
-
 		private ObservableCollection<string> _Chefs = new ObservableCollection<string> ();
 		public ObservableCollection<string> Chefs {
 			get { return _Chefs; }
@@ -129,32 +148,7 @@ namespace FamilyMenu
                 Debug.WriteLine("UpdateMenuAsync: " + rc);
 
                 // Nu de mainlist UI update forceren
-                var currentDate = DateTime.Parse(CurrentEntry.Datum);
-
-                switch (currentDate.DayOfWeek)
-                {
-                    case DayOfWeek.Saturday:
-                        mainListVM.Zaterdag = CurrentEntry;
-                        break;
-                    case DayOfWeek.Sunday:
-                        mainListVM.Zondag = CurrentEntry;
-                        break;
-                    case DayOfWeek.Monday:
-                        mainListVM.Maandag = CurrentEntry;
-                        break;
-                    case DayOfWeek.Tuesday:
-                        mainListVM.Dinsdag = CurrentEntry;
-                        break;
-                    case DayOfWeek.Wednesday:
-                        mainListVM.Woensdag = CurrentEntry;
-                        break;
-                    case DayOfWeek.Thursday:
-                        mainListVM.Donderdag = CurrentEntry;
-                        break;
-                    case DayOfWeek.Friday:
-                        mainListVM.Vrijdag = CurrentEntry;
-                        break;
-                }
+                //var currentDate = DateTime.Parse(CurrentEntry.Datum);
 			}
 			catch(Exception ex) {
                 Debug.WriteLine("ExecuteSaveCommand: " + ex.Message);
@@ -174,19 +168,6 @@ namespace FamilyMenu
 		{
 			
 		}
-
-		//private void ExecutePickDieetCommand()
-		//{
-		//	navigation.PushAsync (new MenuDieetHistoryView (this));
-		//}
-
-		//private Command pickDieetCommand;
-		//public Command PickDieetCommand {
-		//	get {
-		//		return pickDieetCommand ?? (pickDieetCommand = new Command(ExecutePickDieetCommand));
-		//	}
-		//}
-
 		#endregion
 
 		#region VisualElement properties
@@ -197,5 +178,17 @@ namespace FamilyMenu
 
 		#endregion VisualElement properties
 
-	}
+        public ObservableCollection<MenuOmschrijving> AllMenuEntries { get; set; }
+
+        private async void GetOmschrijvingen() {
+
+            var client = new FamilyMenuServices();
+            var tmp = await client.GetMenuOmschrijvingenAsync();
+
+            foreach(var me in tmp) {
+                me.Omschrijving = me.Omschrijving.Trim();
+                AllMenuEntries.Add (me);
+            }
+        }
+    }
 }

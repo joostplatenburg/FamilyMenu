@@ -29,17 +29,17 @@ namespace FamilyMenu
 		#endregion
 
 		#region  
-		//public DateTime Datum {
-		//	get { return DateTime.Parse(currentMenuEntry.Datum); }
-		//	set { 
-		//		if (currentMenuEntry.Datum == value.ToString("yyyy-MM-dd"))
-		//			return;
+		public DateTime Datum {
+			get { return DateTime.Parse(currentMenuEntry.Datum); }
+			set { 
+				if (currentMenuEntry.Datum == value.ToString("yyyy-MM-dd"))
+					return;
 
-		//		currentMenuEntry.Datum = value.ToString("yyyy-MM-dd");
+				currentMenuEntry.Datum = value.ToString("yyyy-MM-dd");
 
-		//		OnPropertyChanged ("Datum");
-		//	}
-		//}
+				OnPropertyChanged ("Datum");
+			}
+		}
 
 		public string Chef { get { return currentMenuEntry.Chef; }
 			set { 
@@ -63,45 +63,69 @@ namespace FamilyMenu
 			}
 		}
 
-		public string Dieet { get { return currentMenuEntry.Dieet; }
-			set { 
-				if (currentMenuEntry.Dieet == value)
-					return;
+        public string AfwasmachineBeurt
+        {
+            get
+            {
+                var returnString = string.Empty;
 
-				currentMenuEntry.Dieet = value;
+                switch (Datum.DayOfWeek)
+                {
+                    case DayOfWeek.Friday:
+                        returnString = "Afwasmachinebeurt: Matthijs";
+                        break;
+                    case DayOfWeek.Thursday:
+                        returnString = "Afwasmachinebeurt: Isabelle";
+                        break;
+                    case DayOfWeek.Wednesday:
+                        returnString = "Afwasmachinebeurt: Isabelle";
+                        break;
+                    case DayOfWeek.Tuesday:
+                        returnString = "Afwasmachinebeurt: Matthijs";
+                        break;
+                    case DayOfWeek.Monday:
+                        returnString = "Afwasmachinebeurt: Casper";
+                        break;
+                    case DayOfWeek.Sunday:
+                        returnString = "Afwasmachinebeurt: Sebastiaan";
+                        break;
+                    case DayOfWeek.Saturday:
+                        returnString = "Afwasmachinebeurt: Casper";
+                        break;
+                };
 
-				OnPropertyChanged ("Dieet");
-			}
-		}
+                return returnString;
+            }
+        }
 
-		public string OmschrijvingWithDieet 
-		{ 
-			get 
-			{ 
-					var retString = currentMenuEntry.Omschrijving;
+        public string KattenbakSignaal
+        {
+            get
+            {
+                var returnString = string.Empty;
 
-					if (!string.IsNullOrEmpty (currentMenuEntry.Dieet)) {
-						retString = string.Format ("{0} ({1})", retString, currentMenuEntry.Dieet);
-				}
+                if ((Datum.DayOfYear % 3) == 0)
+                {
+                    returnString = returnString + "KATENBAK VERSCHONEN !";
+                }
 
-				return retString; 
-			} 
-		}
+                return returnString;
+            }
+        }
+        #endregion
 
-		#endregion
+        //public double DayColumnWidth { get { return DeviceInfo.FontSizeDay * 2.4; } }
 
-		//public double DayColumnWidth { get { return DeviceInfo.FontSizeDay * 2.4; } }
+        //// Specificly for day
+        //public double DayFontSize { get { return DeviceInfo.FontSizeDay; } }
+        //public double DateFontSize { get { return DeviceInfo.FontSizeDate; } }
+        //public double ChefFontSize { get { return DeviceInfo.FontSizeChef; } }
+        //public double OmschrijvingFontSize { get { return DeviceInfo.FontSizeOmschrijving; } }
 
-		//// Specificly for day
-		//public double DayFontSize { get { return DeviceInfo.FontSizeDay; } }
-		//public double DateFontSize { get { return DeviceInfo.FontSizeDate; } }
-		//public double ChefFontSize { get { return DeviceInfo.FontSizeChef; } }
-		//public double OmschrijvingFontSize { get { return DeviceInfo.FontSizeOmschrijving; } }
-
-		//public double DayHeight { get { return (DeviceInfo.FontSizeDay + 6); } }
-		//public double ChefHeight { get { return (DeviceInfo.FontSizeChef + 6); } }
-		//public double OmschrijvingHeight { get { return ((DeviceInfo.FontSizeOmschrijving * 2.5) + 6); } }
-	}
+        //public double DayHeight { get { return (DeviceInfo.FontSizeDay + 6); } }
+        //public double ChefHeight { get { return (DeviceInfo.FontSizeChef + 6); } }
+        //public double OmschrijvingHeight { get { return ((DeviceInfo.FontSizeOmschrijving * 2.5) + 6); } }
+    }
 }
 
 

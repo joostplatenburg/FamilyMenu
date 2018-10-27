@@ -8,246 +8,119 @@ using System.Diagnostics;
 using FamilyMenu.Services;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace FamilyMenu
 {
     public class MainListViewModel : INotifyPropertyChanged
     {
-        public MainListViewModel(DateTime datum)
+        #region Constructors
+        public MainListViewModel()
         {
-            Debug.WriteLine("MainListViewModel: " + datum.ToString());
+            Debug.WriteLine("JAP001 - MainListViewModel()");
+
+        }
+
+        public MainListViewModel(DateTime datum, double footerHeight)
+        {
+            Debug.WriteLine(string.Format("\nJAP001 - MainListViewModel({0}, {1})", datum.ToString(), footerHeight));
+
+            HeightInPixels = App.Metrics.Height / App.Metrics.Density;
+            if (footerHeight == -1) {
+                footerHeight = 54 * App.Metrics.Density;
+            }
+            FooterHeight = footerHeight;
+
+            //Debug.WriteLine(string.Format("JAP001 - ScreenHeight in pixels: {0}/{1}={2}", App.Metrics.Height, App.Metrics.Density, HeightInPixels));
+            //Debug.WriteLine(string.Format("JAP001 - FooterHeight: {0}", footerHeigth));
 
             CurrentSaterday = GetLastSaterday(datum);
 
             FillCurrentWeekViewModel(CurrentSaterday);
-            //CurrentWeek =  new ObservableCollection<MenuEntry>( App.Database.GetWeek (CurrentSaterday) );
 
-            //MessagingCenter.Subscribe<INetworkFunctions>
-            //    (this, "UpdateListView", (sender) => { ExecuteCurrentWeekCommand(); });
-
-            //MessagingCenter.Subscribe<DetailsViewModel>
-                //(this, "UpdateListView", (sender) => { ExecuteCurrentWeekCommand(); });
+            if (null != CurrentWeek) { 
+                Debug.WriteLine("JAP001 - > Aantal menu entries in huidige week: " + CurrentWeek.Count);
+            }
         }
+
+        double HeightInPixels = 0;
+        double FooterHeight = 0;
+        #endregion Constructors
 
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string name)
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.OnPropertyChanged({0})", name));
+
             if (PropertyChanged == null)
                 return;
 
             PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-        private MenuEntry _zaterdag;
-        public MenuEntry Zaterdag
-        {
-            get { return _zaterdag; }
-            set
-            {
-                if (_zaterdag != value)
-                    _zaterdag = value;
 
-                OnPropertyChanged("Zaterdag");
-                OnPropertyChanged("CurrentWeek");
+        #region Properties
+        private double _rowheight;
+        public double RowHeight
+        {
+            get {
+                return DeviceInfo.Platform == DeviceInfo.Platforms.UWP ? (HeightInPixels - FooterHeight) / 11 : (HeightInPixels - FooterHeight) / 7;
             }
         }
 
-        private MenuEntry _zondag;
-        public MenuEntry Zondag
+        private List<MenuEntryViewModel> _currentWeek;
+        public List<MenuEntryViewModel> CurrentWeek
         {
-            get { return _zondag; }
+            get { return _currentWeek; }
             set
             {
-                if (_zondag != value)
-                    _zondag = value;
-
-                OnPropertyChanged("Zondag");
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private MenuEntry _maandag;
-        public MenuEntry Maandag
-        {
-            get { return _maandag; }
-            set
-            {
-                if (_maandag != value)
-                    _maandag = value;
-
-                OnPropertyChanged("Maandag");
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private MenuEntry _dinsdag;
-        public MenuEntry Dinsdag
-        {
-            get { return _dinsdag; }
-            set
-            {
-                if (_dinsdag != value)
-                    _dinsdag = value;
-
-                OnPropertyChanged("Dinsdag");
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private MenuEntry _woensdag;
-        public MenuEntry Woensdag
-        {
-            get { return _woensdag; }
-            set
-            {
-                if (_woensdag != value)
-                    _woensdag = value;
-
-                OnPropertyChanged("Woensdag");
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private MenuEntry _donderdag;
-        public MenuEntry Donderdag
-        {
-            get { return _donderdag; }
-            set
-            {
-                if (_donderdag != value)
-                    _donderdag = value;
-
-                OnPropertyChanged("Donderdag");
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private MenuEntry _vrijdag;
-        public MenuEntry Vrijdag
-        {
-            get { return _vrijdag; }
-            set
-            {
-                if (_vrijdag != value)
-                    _vrijdag = value;
-
-                OnPropertyChanged("Vrijdag");
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private async void FillCurrentWeekViewModel(DateTime date)
-        {
-            Debug.WriteLine("FillCurrentWeekViewModel: " + date.ToString());
-
-            var startdatum = currentSaterday.Year + "-"
-                                + string.Format("{0:D2}", currentSaterday.Month) + "-"
-                                + string.Format("{0:D2}", currentSaterday.Day);
-
-            var client = new FamilyMenuServices();
-
-            Week week = await client.GetWeekAsync(startdatum);
-
-            //List<MenuEntry>  = es.ToList<MenuEntry>();
-            var thisWeek = week.week;
-
-            if (thisWeek.Count < 7)
-            {
-                // Add new Week
-                AddNewWeek(date.AddDays(thisWeek.Count), 7 - thisWeek.Count);
-            }
-
-            CurrentWeek.Clear();
-
-            foreach (var me in thisWeek)
-            {
-                var menuDatum = DateTime.Parse(me.Datum);
-
-                switch (menuDatum.DayOfWeek)
+                if (_currentWeek != value)
                 {
-                    case DayOfWeek.Friday:
-                        Vrijdag = me;
-                        break;
-                    case DayOfWeek.Thursday:
-                        Donderdag = me;
-                        break;
-                    case DayOfWeek.Wednesday:
-                        Woensdag = me;
-                        break;
-                    case DayOfWeek.Tuesday:
-                        Dinsdag = me;
-                        break;
-                    case DayOfWeek.Monday:
-                        Maandag = me;
-                        break;
-                    case DayOfWeek.Sunday:
-                        Zondag = me;
-                        break;
-                    case DayOfWeek.Saturday:
-                        Zaterdag = me;
-                        break;
-                };
+                    _currentWeek = value;
 
-                CurrentWeek.Add(new MenuEntryViewModel(me));
-            }
-        }
-
-        private ObservableCollection<MenuEntryViewModel> currentWeek = new ObservableCollection<MenuEntryViewModel>();
-        public ObservableCollection<MenuEntryViewModel> CurrentWeek
-        {
-            get { return currentWeek; }
-            set
-            {
-                currentWeek = value;
-
-                OnPropertyChanged("CurrentWeek");
-            }
-        }
-
-        private MenuEntry _selectedItem;
-        public MenuEntry SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                if (_selectedItem != value)
-                {
-                    _selectedItem = value;
-
-                    OnPropertyChanged("SelectedItem");
+                    OnPropertyChanged("CurrentWeek");
                 }
             }
         }
 
-        private DateTime currentSaterday;
-        public DateTime CurrentSaterday
+        private MenuEntryViewModel _selectedday;
+        public MenuEntryViewModel SelectedDay
         {
-            get { return currentSaterday; }
+            get { return _selectedday; }
             set
             {
-                if (currentSaterday == value)
-                    return;
+                if (_selectedday != value)
+                {
+                    _selectedday = value;
 
-                currentSaterday = value;
+                    OnPropertyChanged("SelectedDay");
+                }
+            }
+        }
 
-                OnPropertyChanged("CurrentSaterday");
-                OnPropertyChanged("DisplayCurrentSaterday");
-                OnPropertyChanged("UseCardFrom");
-                OnPropertyChanged("Zaterdag");
-                OnPropertyChanged("Zondag");
-                OnPropertyChanged("Maandag");
-                OnPropertyChanged("Dinsdag");
-                OnPropertyChanged("Woensdag");
-                OnPropertyChanged("Donderdag");
-                OnPropertyChanged("Vrijdag");
+        private DateTime _currentSaterday;
+        public DateTime CurrentSaterday
+        {
+            get { return _currentSaterday; }
+            set
+            {
+                if (_currentSaterday != value)
+                {
+                    _currentSaterday = value;
+
+                    OnPropertyChanged("CurrentSaterday");
+                    OnPropertyChanged("DisplayCurrentSaterday");
+                    OnPropertyChanged("UseCardFrom");
+                }
             }
         }
 
         public string DisplayCurrentSaterday
         {
-            get { return currentSaterday.ToString("dd MMMMM yyyy"); }
+            get { return CurrentSaterday.ToString("dd MMMMM yyyy"); }
         }
 
         public string UseCardFrom
@@ -256,19 +129,56 @@ namespace FamilyMenu
             {
                 int weekNo = GetIso8601WeekOfYear(CurrentSaterday);
 
-                Debug.WriteLine("Weeknummer: " + weekNo + ", modulo 3: " + (weekNo % 3));
+                Debug.WriteLine("JAP001 - MainListViewModel.UseCardFrom(): Weeknummer: " + weekNo + ", modulo 3: " + (weekNo % 3));
 
-                switch (weekNo % 3)
+                switch (weekNo % 2)
                 {
                     case 0:
                         return "CASPER";
                     case 1:
                         return "ISABELLE";
-                    case 2:
-                        return "MATTHIJS";
+                    //case 2:
+                    //    return "MATTHIJS";
                     default:
                         return "Error during modulo calculation: " + weekNo;
                 }
+            }
+        }
+        #endregion Properties
+
+        #region Methods
+        private async void FillCurrentWeekViewModel(DateTime date)
+        {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.FillCurrentWeekViewModel({0})", date.ToString()));
+
+            var startdatum = CurrentSaterday.Year + "-"
+                            + string.Format("{0:D2}", CurrentSaterday.Month) + "-"
+                            + string.Format("{0:D2}", CurrentSaterday.Day);
+
+            var client = new FamilyMenuServices();
+            Week week = await client.GetWeekAsync(startdatum);
+
+            if(null == week) {
+                AddNewWeek(CurrentSaterday, 7);
+
+                week = await client.GetWeekAsync(startdatum);
+            }
+
+            var thisWeek = week.week;
+
+            // Add new Week
+            if (thisWeek.Count < 7)
+            {
+                AddNewWeek(date.AddDays(thisWeek.Count), 7 - thisWeek.Count);
+            }
+
+            CurrentWeek = new List<MenuEntryViewModel>();
+
+            foreach (var me in thisWeek)
+            {
+                var menuDatum = DateTime.Parse(me.Datum);
+
+                CurrentWeek.Add(new MenuEntryViewModel(me));
             }
         }
 
@@ -276,6 +186,8 @@ namespace FamilyMenu
         // Week 1 is the 1st week of the year with a Thursday in it.
         public static int GetIso8601WeekOfYear(DateTime time)
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.GetIso8601WeekOfYear({0})", time.ToString()));
+
             // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
             // be the same week# as whatever Thursday, Friday or Saturday are,
             // and we always get those right
@@ -291,15 +203,15 @@ namespace FamilyMenu
 
         internal async void AddNewWeek(DateTime saterday, int numberOfDays)
         {
-            Debug.WriteLine("AddNewWeek: " + saterday.ToString() + " (" + numberOfDays + ")");
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.AddNewWeek({0}, {1})", saterday.ToString(), numberOfDays));
 
             // First get highest id and add 1
             //var tmp = App.Database.GetItems();
 
             var client = new FamilyMenuServices();
-            var es = await client.GetHighestIDAsync();
+            //var es = await client.GetHighestIDAsync();
 
-            int newId = int.Parse(es) + 1;
+            //int newId = int.Parse(es) + 1;
 
             for (int i = 0; i < numberOfDays; i++)
             {
@@ -308,12 +220,10 @@ namespace FamilyMenu
 
                 MenuEntry me = new MenuEntry
                 {
-                    ID = newId + i,
+                    //ID = newId + i,
                     Datum = dt.Year + "-" + dt.Month.ToString("d2") + "-" + dt.Day.ToString("d2"),
                     Chef = "Choose a chef",
-                    Omschrijving = "",
-                    AantalDieet = "",
-                    Dieet = ""
+                    Omschrijving = ""
                 };
 
                 if (dt.DayOfWeek.ToString() == "Wednesday") {
@@ -326,7 +236,7 @@ namespace FamilyMenu
 
                 try
                 {
-                    var rcB = client.InsertMenuAsync(me).Result;
+                    var rcB = await client.InsertMenuAsync(me);
 
                 }
                 catch (Exception ex)
@@ -335,9 +245,9 @@ namespace FamilyMenu
                 }
             }
         }
+        #endregion
 
         #region Commands
-
         private Command nextWeekCommand;
         public Command NextWeekCommand
         {
@@ -349,18 +259,12 @@ namespace FamilyMenu
 
         internal void ExecuteNextWeekCommand()
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.ExecuteNextWeekCommand()"));
+
             CurrentSaterday = CurrentSaterday.AddDays(7);
 
             FillCurrentWeekViewModel(CurrentSaterday);
 
-            if (CurrentWeek.Count < 7)
-            {
-                // Add new Week
-                AddNewWeek(CurrentSaterday.AddDays(CurrentWeek.Count), 7 - CurrentWeek.Count);
-
-                FillCurrentWeekViewModel(CurrentSaterday);
-            }
-            //
             OnPropertyChanged ("CurrentWeek");
         }
 
@@ -375,6 +279,8 @@ namespace FamilyMenu
 
         internal void ExecutePreviousWeekCommand()
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.ExecutePreviousWeekCommand()"));
+
             CurrentSaterday = CurrentSaterday.AddDays(-7);
 
             FillCurrentWeekViewModel(CurrentSaterday);
@@ -393,6 +299,8 @@ namespace FamilyMenu
 
         private void ExecuteCurrentWeekCommand()
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.ExecuteCurrentWeekCommand()"));
+
             FillCurrentWeekViewModel(CurrentSaterday);
         }
 
@@ -407,17 +315,20 @@ namespace FamilyMenu
 
         private void ExecuteThisWeekCommand()
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.ExecuteThisWeekCommand()"));
+
             CurrentSaterday = GetLastSaterday(DateTime.Now.Date);
 
             FillCurrentWeekViewModel(CurrentSaterday);
             //
             //			OnPropertyChanged ("CurrentWeek");
         }
-
         #endregion
 
         private DateTime GetLastSaterday(DateTime date)
         {
+            Debug.WriteLine(string.Format("JAP001 - MainListViewModel.GetLastSaterday({0})", date.ToString()));
+
             switch (date.DayOfWeek)
             {
                 case DayOfWeek.Friday:
@@ -438,17 +349,6 @@ namespace FamilyMenu
 
             return CurrentSaterday;
         }
-
-        #region VisualElement properties
-        /// <summary>
-        /// Thes values are depended on device orientation
-        /// 
-        /// </summary>
-        /// 
-
-        public double RowHeight { get { return ((App.Metrics.Height - 54) / 26); } }
-
-        #endregion VisualElement properties
     }
 }
 

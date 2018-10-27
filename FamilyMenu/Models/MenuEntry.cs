@@ -11,11 +11,9 @@ namespace FamilyMenu
 		public string Datum {	get ; set; }
 		public string Chef { get; set; }
 		public string Omschrijving { get; set; }
-		public string Date { get; set; }
+        public string DeviceName { get; set; }
+        public string Date { get; set; }
 		public string Time { get; set; }
-		public string DeviceName { get; set; }
-		public string Dieet { get; set; }
-		public string AantalDieet { get; set; }
 	}
 
     public class Week

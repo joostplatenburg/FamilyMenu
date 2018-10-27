@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:FamilyMenu;assembly=FamilyMenu" 
+             x:Class="FamilyMenu.App">
+    
+    <Application.Resources>
+        <!-- Application resource dictionary -->
+        <ResourceDictionary>
+            <!-- Button Styles -->
+            <Style x:Key="labelStyleDay" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="FontSize" Value="34" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <!--<Setter Property="HeightRequest" Value="80" />-->
+                <Setter Property="WidthRequest" Value="90" />
+                <Setter Property="XAlign" Value="Center" />
+                <Setter Property="YAlign" Value="Start" />
+            </Style>
+            <Style x:Key="labelStyleDate" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="XAlign" Value="Center" />
+                <Setter Property="YAlign" Value="Start" />
+            </Style>
+            <Style x:Key="labelStyleChef" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+            </Style>
+            <Style x:Key="labelStyleMenuEntry" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="FontAttributes" Value="Italic,Bold" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.EntryTextColor}" />
+            </Style>
+            <Style x:Key="labelStyleAfwas" TargetType="Label">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="FontFamily" Value="Verdana" />
+                <Setter Property="TextColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="FontAttributes" Value="Italic,Bold" />
+            </Style>
+
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="WidthRequest" Value="200" />
+                <!--<Setter Property="HeightRequest" Value="40" />-->
+            </Style>
+            <Style x:Key="boxViewStyle1" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="2" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="BackgroundColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+            <Style x:Key="boxViewStyle2" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="1" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="BackgroundColor" Value="{x:Static local:ColorResources.LabelTextColor}" />
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+            <Style x:Key="stackLayoutStyle1" TargetType="StackLayout">
+                <Setter Property="Orientation" Value="Vertical" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="WidthRequest" Value="100" />
+            </Style>
+            <Style x:Key="stackLayoutStyle2" TargetType="StackLayout">
+                <Setter Property="Orientation" Value="Vertical" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="WidthRequest" Value="300" />
+            </Style>
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="Black" />
+                <Setter Property="BorderRadius" Value="10" />
+                <!--<Setter Property="HeightRequest" Value="35" />-->
+                <Setter Property="WidthRequest" Value="100" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="IsEnabled" Value="true" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

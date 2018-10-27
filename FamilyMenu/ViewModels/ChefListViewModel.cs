@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
+using FamilyMenu.Services;
 
 namespace FamilyMenu
 {
@@ -13,12 +14,14 @@ namespace FamilyMenu
 		{
 			this.navigation = navigation;
 
-			MessagingCenter.Subscribe<INetworkFunctions> (this, "UpdateChefList", (sender) => {
+            GetChefs();
 
-				LoadChefsCommand.Execute(null);
-			});
-
-			LoadChefsCommand.Execute(null);
+//			MessagingCenter.Subscribe<INetworkFunctions> (this, "UpdateChefList", (sender) => {
+//
+//				LoadChefsCommand.Execute(null);
+//			});
+//
+//			LoadChefsCommand.Execute(null);
 		}
 
 		#region INotifyPropertyChanged implementation
@@ -60,23 +63,18 @@ namespace FamilyMenu
 		}
 
 		#region Commands
-		private Command loadChefsCommand;
-		public Command LoadChefsCommand {
-			get {
-				return loadChefsCommand ?? (loadChefsCommand = new Command(ExecuteLoadChefsCommand));
-			}
-		}
-
-		private async void ExecuteLoadChefsCommand()
-		{
+        private async void GetChefs()
+        {
             Chefs.Clear();
 
-   //         var chefs = await App.Database.GetChefs ();
-            			
-			//foreach (var chef in chefs) {
-			//	Chefs.Add(new ChefDetailViewModel(chef, navigation));
-			//}
-		}
+            var client = new FamilyMenuServices();
+            var chefs = await client.GetChefsAsync();
+
+            foreach (var chef in chefs)
+            {
+                Chefs.Add(new ChefDetailViewModel(chef, navigation));
+            }
+        }
 
 		private Command addCommand;
 		public Command AddCommand {
@@ -89,8 +87,7 @@ namespace FamilyMenu
 		{
 			navigation.PushAsync(new ChefDetailView());
 		}
-
-		#endregion Commands
+        #endregion Commands
 
 	}
 }

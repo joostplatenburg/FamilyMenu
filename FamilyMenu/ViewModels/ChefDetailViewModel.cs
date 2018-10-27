@@ -90,10 +90,10 @@ namespace FamilyMenu
 
 			try
 			{
-				string urlPhp = string.Format(App.updateChefStm, CurrentChef.ID, CurrentChef.Name, 
-										App.DeviceName);
+				//string urlPhp = string.Format(App.updateChefStm, CurrentChef.ID, CurrentChef.Name, 
+				//						App.DeviceName);
 
-				DependencyService.Get<INetworkFunctions> ().callAsyncPHPScript (urlPhp);
+				//DependencyService.Get<INetworkFunctions> ().callAsyncPHPScript (urlPhp);
 			}
 			catch(Exception ex) {
 				Debug.WriteLine ("Error: " + ex.Message);
@@ -116,9 +116,9 @@ namespace FamilyMenu
 			//App.Database.DeleteChef (CurrentChef.ID);
 
 			try {
-				string urlPhp = string.Format(App.deleteChefStm, CurrentChef.ID);
+				//string urlPhp = string.Format(App.deleteChefStm, CurrentChef.ID);
 
-				DependencyService.Get<INetworkFunctions> ().callAsyncPHPScript (urlPhp);
+				//DependencyService.Get<INetworkFunctions> ().callAsyncPHPScript (urlPhp);
 
 			} catch (Exception) {
 

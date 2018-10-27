@@ -12,66 +12,44 @@
 	</ContentPage.ToolbarItems>
 
     <ContentPage.Content>
-		<Grid Padding="0,10,0,0">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="2" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="2" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="2" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
+        <StackLayout Orientation="Vertical">
+			<Label Text="{Binding Datum, StringFormat='{0:dddd d MMMM yyyy}'}" 
+                   TextColor="{x:Static local:ColorResources.LabelTextColor}"
+                   FontSize = "24" Font="Bold" Margin="5" HorizontalOptions="Center" />
 
-			<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-					Text="{Binding DatumString}" TextColor="{x:Static local:ColorResources.LabelTextColor}"
-					FontSize = "22" Font="Bold"  WidthRequest="300"/>
+            <BoxView Style="{StaticResource boxViewStyle1}" />
 
-			<Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-					BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2"/>
+            <StackLayout Orientation="Horizontal">
+    			<Label Text="Chef:" Style="{StaticResource LabelStyle}" />
 
-			<Label Grid.Row="2" Grid.Column="0" Text="Chef:" Style="{StaticResource LabelStyle}" />
+    			<Picker	ItemsSource="{Binding Chefs}" SelectedItem="{Binding Chef, Mode=TwoWay}" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+        
+            <StackLayout Orientation="Horizontal">
+    			<Label Text="Menu:" Style="{StaticResource LabelStyle}" VerticalOptions = "StartAndExpand" />
 
-			<local:BindablePicker
-			 		Grid.Row="2" Grid.Column="1"
-			 		ItemsSource="{Binding Chefs}" 
-					WidthRequest = "{Binding Width, Mode=OneWay}" 
-					SelectedItem = "{Binding Chef, Mode=TwoWay}" />
+    			<Editor Keyboard="Text" Style="{StaticResource EditorStyle}" Text = "{Binding Omschrijving, Mode=TwoWay}" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
 
-			<Label Grid.Row="3" Grid.Column="0" Text="Menu:" Style="{StaticResource LabelStyle}"
-					VerticalOptions = "StartAndExpand" />
+            <BoxView Style="{StaticResource boxViewStyle1}" />
+                
+            <StackLayout Orientation="Vertical">
+                <ListView x:Name="list" ItemsSource="{Binding AllMenuEntries}" HasUnevenRows="true">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Vertical" Margin="0,10,0,10">
+                                    <Label Text="{Binding Omschrijving}" FontSize = "16" 
+                                            TextColor="{x:Static local:ColorResources.ListViewTextColor}" LineBreakMode="WordWrap"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
 
-			<Editor Grid.Row="3" Grid.Column="1" Keyboard = "Text" Style="{StaticResource EditorStyle}"
-					Text = "{Binding Omschrijving, Mode=TwoWay}" />
-
-			<Button Grid.Row="4" Grid.Column="1" Style="{StaticResource ButtonStyle}"
-					Text = "Pick one" Clicked = "OnPickCommand" />
-
-			<Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-					BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2"/>
-
-<!--
-            <Label Grid.Row="6" Grid.Column="0" Text="Dieet:" Style="{StaticResource LabelStyle}"
-					VerticalOptions = "StartAndExpand" />
-
-			<Editor Grid.Row="6" Grid.Column="1" Keyboard = "Text" Style="{StaticResource EditorStyle}"
-					Text = "{Binding Dieet, Mode=TwoWay}" />
-
-			<Button Grid.Row="7" Grid.Column="1" Style="{StaticResource ButtonStyle}"
-					Text = "Pick one" Command = "{Binding PickDieetCommand}" />
-
-			<Label Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
-					BackgroundColor="{x:Static local:ColorResources.AccentColor}" HeightRequest="2"/>
--->
-		</Grid>
-	</ContentPage.Content>
+        </StackLayout>
+    </ContentPage.Content>
 
     <ContentPage.Resources>
         <ResourceDictionary>
